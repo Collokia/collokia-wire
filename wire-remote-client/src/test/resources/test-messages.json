@@ -1,0 +1,9 @@
+[
+{"body":"this is a message"}
+,
+{"address":"all","body":"this is a direct message"}
+,
+{"needsResponse":true,"body":"respond to this message"}
+,
+{"needsResponse":true,"body":"respond to this message before timeout","timeout":60000}
+]

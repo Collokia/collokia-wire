@@ -1,0 +1,63 @@
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.1'
+}
+
+buildscript {
+    repositories {
+        jcenter()
+        maven { url 'http://repo.spring.io/plugins-release' }
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
+        classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
+        classpath "io.vertx:vertx-core:$vertxVersion"
+        classpath "io.vertx:vertx-platform:$vertxVersion"
+        classpath "io.vertx:vertx-hazelcast:$vertxVersion"
+    }
+}
+
+subprojects {
+    apply plugin: 'propdeps'
+    apply plugin: 'propdeps-maven'
+    apply plugin: 'propdeps-idea'
+    apply plugin: 'propdeps-eclipse'
+    apply plugin: 'kotlin'
+
+    sourceCompatibility = JavaVersion.VERSION_1_7
+    targetCompatibility = JavaVersion.VERSION_1_7
+
+    task sourceJar(type: Jar) {
+        classifier = 'sources'
+        from sourceSets.main.allJava
+    }
+
+    task javadocJar(type: Jar) {
+        classifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+    javadocJar.dependsOn javadoc
+
+    build.dependsOn sourceJar, javadocJar
+
+    artifacts {
+        archives sourceJar, javadocJar
+    }
+
+    dependencies {
+        compile "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}"
+        compile "com.collokia:collokia-common:${collokiaCommonVersion}"
+    }
+
+    repositories {
+        jcenter()
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+        maven {
+            url "https://collokia.artifactoryonline.com/collokia/collokia-internal"
+            credentials {
+                username "${collokiaRepoUser}"
+                password "${collokiaRepoPass}"
+            }
+        }
+    }
+}

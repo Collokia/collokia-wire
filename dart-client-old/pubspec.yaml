@@ -1,0 +1,6 @@
+name: msg_client
+description: Collokia dart message client
+dependencies:
+  browser: any
+  uuid: any
+  utf: any

@@ -1,0 +1,173 @@
+import org.vertx.java.platform.impl.cli.Starter
+
+apply plugin: 'groovy'
+
+repositories {
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+}
+
+dependencies {
+    compile project(":wire-protocol")
+
+    provided "io.vertx:vertx-core:$vertxVersion"
+    provided "io.vertx:vertx-platform:$vertxVersion"
+    testCompile "junit:junit:$junitVersion"
+    testCompile "io.vertx:testtools:$vertxToolsVersion"
+}
+
+def configurePom(def pom) {
+}
+
+def cpSeparator = System.getProperty("path.separator")
+
+// We  have to explicitly load props from the user home dir - on CI we set
+// GRADLE_USER_HOME to a different dir to avoid problems with concurrent builds corrupting
+// a shared Maven local and using Gradle wrapper concurrently
+loadProperties("${System.getProperty('user.home')}/.gradle/gradle.properties")
+
+group = modowner
+archivesBaseName = modname
+
+defaultTasks = ['assemble']
+
+project.ext.moduleName = "$modowner~$modname~$version"
+
+task copyMod( type:Copy, dependsOn: 'classes', description: 'Assemble the module into the local mods directory' ) {
+    into "build/mods/$moduleName"
+    from compileJava
+    from 'src/main/resources'
+    into( 'lib' ) {
+        from configurations.compile
+    }
+}
+
+task modZip( type: Zip, dependsOn: 'pullInDeps', description: 'Package the module .zip file') {
+    group = 'vert.x'
+    classifier = "mod"
+    description = "Assembles a vert.x module"
+    destinationDir = project.file('build/libs')
+    archiveName = "${modname}-${version}" + ".zip"
+    from copyMod
+}
+
+artifacts {
+    archives sourceJar, javadocJar, modZip
+}
+
+test {
+    dependsOn copyMod
+
+    // Make sure tests are always run!
+    outputs.upToDateWhen { false }
+
+    // Show output
+    testLogging.showStandardStreams = true
+
+    testLogging { exceptionFormat "full" }
+
+    systemProperty 'vertx.mods', "build/mods"
+}
+
+task init(description: 'Create module link and CP file') << {
+    setSysProps()
+    doInit()
+}
+
+task collectDeps(type: Copy) {
+    destinationDir = file("build")
+    into("deps") {
+        from configurations.compile
+    }
+}
+
+task runMod(description: 'Run the module', dependsOn: collectDeps) << {
+    setSysProps()
+    // We also init here - this means for single module builds the user doesn't have to explicitly init -
+    // they can just do runMod
+    doInit()
+    args = ['runmod', moduleName]
+    def args2 = runModArgs.split("\\s+")
+    args.addAll(args2)
+    Starter.main(args as String[])
+}
+
+def doInit() {
+    File cpFile = new File("vertx_classpath.txt")
+    if (!cpFile.exists()) {
+        cpFile.createNewFile();
+        String defaultCp =
+                "src/main/resources\r\n" +
+                        "bin\r\n" +
+                        "out/production/${project.name}\r\n" +
+                        "out/test/${project.name}\r\n" +
+                        "build/deps\r\n";
+        cpFile << defaultCp;
+    }
+    def args = ['create-module-link', moduleName]
+    Starter.main(args as String[])
+}
+
+task pullInDeps(dependsOn: copyMod, description: 'Pull in all the module dependencies for the module into the nested mods directory') << {
+    if (pullInDeps == 'true') {
+        setSysProps()
+        def args = ['pulldeps', moduleName]
+        Starter.main(args as String[])
+    }
+}
+
+task fatJar(dependsOn: modZip, description: 'Creates a fat executable jar which contains everything needed to run the module') << {
+    if (createFatJar == 'true') {
+        setSysProps()
+        def args = ['fatjar', moduleName, '-d', 'build/libs']
+        Starter.main(args as String[])
+    }
+}
+
+def setSysProps() {
+    System.setProperty("vertx.clusterManagerFactory", "org.vertx.java.spi.cluster.impl.hazelcast.HazelcastClusterManagerFactory")
+    String modsDir = System.getenv("VERTX_MODS")
+    if (modsDir == null) {
+        modsDir = "build/mods";
+    }
+    System.setProperty("vertx.mods", modsDir)
+}
+
+def loadProperties(String sourceFileName) {
+    def config = new Properties()
+    def propFile = new File(sourceFileName)
+    if (propFile.canRead()) {
+        config.load(new FileInputStream(propFile))
+        for (Map.Entry property in config) {
+            project.ext[property.key] = property.value;
+        }
+    }
+}
+
+apply plugin: 'maven-publish'
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifactId 'collokia-wire-routing-server'
+
+            from components.java
+
+            artifact sourceJar {
+                classifier "sources"
+            }
+
+            artifact modZip {
+                classifier "mod"
+            }
+        }
+    }
+    repositories {
+        maven {
+            url "https://collokia.artifactoryonline.com/collokia/collokia-internal"
+            credentials {
+                username "${collokiaRepoUser}"
+                password "${collokiaRepoPass}"
+            }
+        }
+    }
+}
