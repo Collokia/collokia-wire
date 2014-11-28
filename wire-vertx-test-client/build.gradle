@@ -1,6 +1,6 @@
 dependencies {
-    compile project(":wire-routing-server")
-    compile project(":wire-vertx-client")
+    compile relativeProject(":wire-routing-server")
+    compile relativeProject(":wire-vertx-client")
 
     compile "io.vertx:vertx-core:${vertxVersion}"
     compile "io.vertx:vertx-platform:${vertxVersion}"

@@ -1,5 +1,5 @@
 dependencies {
-    compile project(":wire-protocol")
+    compile relativeProject(":wire-protocol")
 
     compile "com.ning:async-http-client:${httpClientVersion}"
     compile "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"

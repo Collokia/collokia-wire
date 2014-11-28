@@ -14,6 +14,7 @@ buildscript {
         classpath "io.vertx:vertx-core:$vertxVersion"
         classpath "io.vertx:vertx-platform:$vertxVersion"
         classpath "io.vertx:vertx-hazelcast:$vertxVersion"
+        classpath "com.prezi.gradle.pride:gradle-pride-plugin:0.9.3"
     }
 }
 
@@ -23,6 +24,7 @@ subprojects {
     apply plugin: 'propdeps-idea'
     apply plugin: 'propdeps-eclipse'
     apply plugin: 'kotlin'
+    apply plugin: 'pride'
 
     sourceCompatibility = JavaVersion.VERSION_1_7
     targetCompatibility = JavaVersion.VERSION_1_7
@@ -46,7 +48,10 @@ subprojects {
 
     dependencies {
         compile "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}"
-        compile "com.collokia:collokia-common:${collokiaCommonVersion}"
+    }
+
+    dynamicDependencies {
+        compile group: 'com.collokia', name: 'collokia-common', version: '1.+'
     }
 
     repositories {

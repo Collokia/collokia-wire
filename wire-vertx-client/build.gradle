@@ -1,5 +1,5 @@
 dependencies {
-    compile project(":wire-protocol")
+    compile relativeProject(":wire-protocol")
 
     compile "io.vertx:vertx-core:${vertxVersion}"
 }
