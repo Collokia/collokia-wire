@@ -120,7 +120,7 @@ public class WebSocketsClient(val endpoint: String,
     }
 
     private fun start() {
-        webSocket = httpClient.prepareGet(endpoint).execute(WebSocketUpgradeHandler.Builder().addWebSocketListener(object : WebSocketByteListener {
+        webSocket = httpClient.prepareGet(endpoint)!!.execute(WebSocketUpgradeHandler.Builder().addWebSocketListener(object : WebSocketByteListener {
 
             override fun onMessage(messageBytes: ByteArray?) {
                 lastMessageTime.set(System.currentTimeMillis())
@@ -173,7 +173,7 @@ public class WebSocketsClient(val endpoint: String,
                     onErrorCallable(t)
                 }
             }
-        }).build()).get()!!
+        })!!.build())!!.get()!!
     }
 
     private fun startPingTask(): TimerTask {
