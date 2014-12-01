@@ -1,0 +1,14 @@
+## Gradle stuff
+.gradle
+build/
+gradlew.bat
+
+## IntelliJ stuff
+.idea/
+*.ipr
+*.iml
+*.iws
+
+## OSX stuff
+.DS_Store
+
