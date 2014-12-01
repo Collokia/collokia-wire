@@ -19,7 +19,7 @@ class TestServer() : Verticle() {
         val objectMapper = jacksonObjectMapper()
         var lastMessage: Message? = null
         val waitingForInput = AtomicBoolean(false)
-        val client = VertxClient(vertx!!.eventBus()!!, System.getProperty("collokia.msg.category")!!,
+        val client = VertxClient(vertx.eventBus(), System.getProperty("collokia.msg.category"),
                 onMessage = {
                     if (it.needsResponse) {
                         lastMessage = it
@@ -45,7 +45,7 @@ class TestServer() : Verticle() {
                     val cmd = lineParts[0]
                     val params = if (lineParts.size > 1) lineParts[1].trim() else "{}"
                     val map = objectMapper.readValue(params, javaClass<Map<String, Any>>())
-                    val address = map!!.getOrElse("address", { "" }) as String
+                    val address = map.getOrElse("address", { "" }) as String
                     val needsResponse = map.getOrElse("needsResponse", { false }) as Boolean
                     val respondTimeout = (map.getOrElse("timeout", { VertxClient.DEFAULT_RESPOND_TIMEOUT }) as Number).toLong()
                     val body: ByteArray = (map.getOrElse("body", { "" }) as String).getBytes(UTF_8)

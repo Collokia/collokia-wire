@@ -26,7 +26,7 @@ class MessageServer() : Verticle() {
 
     class object {
 
-        val LOG = LoggerFactory.getLogger(javaClass<MessageServer>())!!
+        val LOG = LoggerFactory.getLogger(javaClass<MessageServer>())
 
         private class SendBytesHandler(val webSocket: ServerWebSocket, val key: String) : Handler<Message<ByteArray>> {
 
@@ -54,13 +54,13 @@ class MessageServer() : Verticle() {
 
         private class WebSocketsHandler(val vertx: Vertx, val config: MessageServerConfig, val s3Client: AmazonS3Client) : Handler<ServerWebSocket> {
 
-            override fun handle(webSocket: ServerWebSocket?) {
-                if (webSocket!!.path()!!.startsWith("/ws/")) {
-                    val lastSlash = webSocket.path()!!.lastIndexOf('/')
-                    val key = if (lastSlash == 3) "" else webSocket.path()!!.substring(4, lastSlash)
+            override fun handle(webSocket: ServerWebSocket) {
+                if (webSocket.path().startsWith("/ws/")) {
+                    val lastSlash = webSocket.path().lastIndexOf('/')
+                    val key = if (lastSlash == 3) "" else webSocket.path().substring(4, lastSlash)
                     val receiveKey = UUID.randomUUID()
                     if (key != config.healthCheckKey && s3Client.keyExists(config.s3UploadBucket, key)) {
-                        val category = webSocket.path()!!.substring(lastSlash + 1)
+                        val category = webSocket.path().substring(lastSlash + 1)
                         val responseTail = buildResponseTail(key, category)
                         val prefix = "${key}/"
                         val allSub = "${prefix}all"
@@ -86,11 +86,11 @@ class MessageServer() : Verticle() {
                                                 if (envelope.isResponse) {
                                                     val buff = Buffer(envelope.toBytes())
                                                     buff.appendBytes(responseTail)
-                                                    vertx.eventBus()!!.send(envelope.address.toString(), buff.getBytes())
+                                                    vertx.eventBus().send(envelope.address.toString(), buff.getBytes())
                                                 } else if (envelope.isManualAddress) {
-                                                    vertx.eventBus()!!.publish("${prefix}${envelope.manualAddress}", bytes)
+                                                    vertx.eventBus().publish("${prefix}${envelope.manualAddress}", bytes)
                                                 } else {
-                                                    vertx.eventBus()!!.send(category, bytes)
+                                                    vertx.eventBus().send(category, bytes)
                                                 }
                                             }
                                         }
@@ -104,13 +104,13 @@ class MessageServer() : Verticle() {
                                 LOG.info("Socket timed out: ${subscription} : ${receiveKey}")
                             }
                         })
-                        vertx.eventBus()!!.registerHandler(allSub, bytesHandler)
-                        vertx.eventBus()!!.registerHandler(subscription, bytesHandler)
-                        vertx.eventBus()!!.registerHandler(receiveKey.toString(), bytesHandler)
+                        vertx.eventBus().registerHandler(allSub, bytesHandler)
+                        vertx.eventBus().registerHandler(subscription, bytesHandler)
+                        vertx.eventBus().registerHandler(receiveKey.toString(), bytesHandler)
                         webSocket.closeHandler {
-                            vertx.eventBus()!!.unregisterHandler(allSub, bytesHandler)
-                            vertx.eventBus()!!.unregisterHandler(subscription, bytesHandler)
-                            vertx.eventBus()!!.unregisterHandler(receiveKey.toString(), bytesHandler)
+                            vertx.eventBus().unregisterHandler(allSub, bytesHandler)
+                            vertx.eventBus().unregisterHandler(subscription, bytesHandler)
+                            vertx.eventBus().unregisterHandler(receiveKey.toString(), bytesHandler)
                             vertx.cancelTimer(timeoutChecker)
                             LOG.info("Closed web socket: ${subscription} : ${receiveKey}")
                         }
@@ -137,7 +137,7 @@ class MessageServer() : Verticle() {
         val appConfig = AppConfig.instance
         val s3Client = AmazonS3Client(appConfig.awsCredentials)
         val config = MessageServerConfig.fromConfig(appConfig.config)
-        vertx!!.createHttpServer()!!.websocketHandler(WebSocketsHandler(vertx!!, config, s3Client))!!.listen(config.port, config.host)
+        vertx.createHttpServer().websocketHandler(WebSocketsHandler(vertx, config, s3Client)).listen(config.port, config.host)
         LOG.info("${this.javaClass.getSimpleName()} started listening on ${config.host}:${config.port}")
     }
 }

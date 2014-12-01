@@ -48,9 +48,6 @@ subprojects {
 
     dependencies {
         compile "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}"
-        compile "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
-        compile "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
-        compile "com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonVersion}-rc1"
     }
 
     dynamicDependencies {

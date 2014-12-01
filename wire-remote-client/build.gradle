@@ -4,7 +4,7 @@ dependencies {
     compile "com.ning:async-http-client:${httpClientVersion}"
     compile "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
     compile "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
-    compile "com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonVersion}-rc1"
+    compile "com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonVersion}"
 }
 
 apply plugin: 'maven-publish'
