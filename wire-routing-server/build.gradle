@@ -7,15 +7,12 @@ repositories {
 }
 
 dependencies {
+    compile relativeProject(":wire-protocol")
+
     provided "io.vertx:vertx-core:$vertxVersion"
     provided "io.vertx:vertx-platform:$vertxVersion"
     testCompile "junit:junit:$junitVersion"
     testCompile "io.vertx:testtools:$vertxToolsVersion"
-}
-
-
-dynamicDependencies {
-    compile group: 'com.collokia', name: 'wire-protocol', version: "${version}"
 }
 
 def configurePom(def pom) {

@@ -1,8 +1,7 @@
 dependencies {
+    compile relativeProject(":wire-protocol")
+
     compile "io.vertx:vertx-core:${vertxVersion}"
 }
 
-dynamicDependencies {
-    compile group: 'com.collokia', name: 'wire-protocol', version: "${version}"
-}
 
