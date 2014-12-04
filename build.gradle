@@ -2,6 +2,12 @@ task wrapper(type: Wrapper) {
     gradleVersion = '2.1'
 }
 
+if (rootProject != project) {
+    configure(rootProject) {
+        apply plugin: 'idea'
+    }
+}
+
 buildscript {
     repositories {
         jcenter()
