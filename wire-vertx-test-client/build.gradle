@@ -1,8 +1,10 @@
 dependencies {
-    compile relativeProject(":wire-routing-server")
-    compile relativeProject(":wire-vertx-client")
-
     compile "io.vertx:vertx-core:${vertxVersion}"
     compile "io.vertx:vertx-platform:${vertxVersion}"
     compile "io.vertx:vertx-hazelcast:${vertxVersion}"
+}
+
+dynamicDependencies {
+    compile group: 'com.collokia', name: 'wire-routing-server', version: "${version}"
+    compile group: 'com.collokia', name: 'wire-vertx-client', version: "${version}"
 }

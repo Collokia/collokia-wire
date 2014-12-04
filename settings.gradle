@@ -1,4 +1,3 @@
-rootProject.name='collokia-wire'
 include 'wire-protocol',
         'wire-routing-server',
         'wire-remote-client',

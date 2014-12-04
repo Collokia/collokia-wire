@@ -7,12 +7,15 @@ repositories {
 }
 
 dependencies {
-    compile relativeProject(":wire-protocol")
-
     provided "io.vertx:vertx-core:$vertxVersion"
     provided "io.vertx:vertx-platform:$vertxVersion"
     testCompile "junit:junit:$junitVersion"
     testCompile "io.vertx:testtools:$vertxToolsVersion"
+}
+
+
+dynamicDependencies {
+    compile group: 'com.collokia', name: 'wire-protocol', version: "${version}"
 }
 
 def configurePom(def pom) {
@@ -143,31 +146,3 @@ def loadProperties(String sourceFileName) {
     }
 }
 
-apply plugin: 'maven-publish'
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            artifactId 'collokia-wire-routing-server'
-
-            from components.java
-
-            artifact sourceJar {
-                classifier "sources"
-            }
-
-            artifact modZip {
-                classifier "mod"
-            }
-        }
-    }
-    repositories {
-        maven {
-            url "https://collokia.artifactoryonline.com/collokia/collokia-internal"
-            credentials {
-                username "${collokiaRepoUser}"
-                password "${collokiaRepoPass}"
-            }
-        }
-    }
-}

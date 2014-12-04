@@ -51,7 +51,7 @@ subprojects {
     }
 
     dynamicDependencies {
-        compile group: 'com.collokia', name: 'collokia-common', version: '1.+'
+        compile group: 'com.collokia', name: 'collokia-common', version: "${collokiaCommonVersion}"
     }
 
     repositories {
@@ -65,4 +65,31 @@ subprojects {
             }
         }
     }
+
+    apply plugin: 'maven-publish'
+
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                from components.java
+
+                artifact sourceJar {
+                    classifier "sources"
+                }
+                artifact javadocJar {
+                    classifier "javadoc"
+                }
+            }
+        }
+        repositories {
+            maven {
+                url "https://collokia.artifactoryonline.com/collokia/collokia-internal"
+                credentials {
+                    username "${collokiaRepoUser}"
+                    password "${collokiaRepoPass}"
+                }
+            }
+        }
+    }
+
 }

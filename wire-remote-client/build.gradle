@@ -1,36 +1,11 @@
 dependencies {
-    compile relativeProject(":wire-protocol")
-
     compile "com.ning:async-http-client:${httpClientVersion}"
     compile "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
     compile "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
     compile "com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonVersion}"
 }
 
-apply plugin: 'maven-publish'
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            artifactId 'collokia-wire-remote-client'
-
-            from components.java
-
-            artifact sourceJar {
-                classifier "sources"
-            }
-            artifact javadocJar {
-                classifier "javadoc"
-            }
-        }
-    }
-    repositories {
-        maven {
-            url "https://collokia.artifactoryonline.com/collokia/collokia-internal"
-            credentials {
-                username "${collokiaRepoUser}"
-                password "${collokiaRepoPass}"
-            }
-        }
-    }
+dynamicDependencies {
+    compile group: 'com.collokia', name: 'wire-protocol', version: "${version}"
 }
+

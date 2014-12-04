@@ -1,33 +1,8 @@
 dependencies {
-    compile relativeProject(":wire-protocol")
-
     compile "io.vertx:vertx-core:${vertxVersion}"
 }
 
-apply plugin: 'maven-publish'
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            artifactId 'collokia-wire-vertx-client'
-
-            from components.java
-
-            artifact sourceJar {
-                classifier "sources"
-            }
-            artifact javadocJar {
-                classifier "javadoc"
-            }
-        }
-    }
-    repositories {
-        maven {
-            url "https://collokia.artifactoryonline.com/collokia/collokia-internal"
-            credentials {
-                username "${collokiaRepoUser}"
-                password "${collokiaRepoPass}"
-            }
-        }
-    }
+dynamicDependencies {
+    compile group: 'com.collokia', name: 'wire-protocol', version: "${version}"
 }
+
