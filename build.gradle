@@ -10,9 +10,23 @@ if (rootProject != project) {
 
 buildscript {
     repositories {
+        maven {
+            url "https://collokia.artifactoryonline.com/collokia/collokia-internal"
+            credentials {
+                username "${collokiaRepoUser}"
+                password "${collokiaRepoPass}"
+            }
+        }
+        maven {
+            url 'https://collokia.artifactoryonline.com/collokia/collokia-oss'
+        }
         jcenter()
-        maven { url 'http://repo.spring.io/plugins-release' }
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+        maven {
+            url 'http://oss.sonatype.org/content/repositories/snapshots'
+        }
+        maven {
+            url 'http://repo.spring.io/plugins-release'
+        }
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
@@ -61,14 +75,22 @@ subprojects {
     }
 
     repositories {
-        jcenter()
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
         maven {
             url "https://collokia.artifactoryonline.com/collokia/collokia-internal"
             credentials {
                 username "${collokiaRepoUser}"
                 password "${collokiaRepoPass}"
             }
+        }
+        maven {
+            url 'https://collokia.artifactoryonline.com/collokia/collokia-oss'
+        }
+        jcenter()
+        maven {
+            url 'http://oss.sonatype.org/content/repositories/snapshots'
+        }
+        maven {
+            url 'http://repo.spring.io/plugins-release'
         }
     }
 
