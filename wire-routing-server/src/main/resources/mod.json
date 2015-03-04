@@ -1,1 +1,1 @@
-{ "main": "com.collokia.msg.MessageServer" }
+{ "main": "com.collokia.wire.server.MessageServer" }

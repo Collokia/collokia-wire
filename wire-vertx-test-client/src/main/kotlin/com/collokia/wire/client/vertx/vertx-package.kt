@@ -15,17 +15,19 @@ class TestServer() : Verticle() {
     private val stop = AtomicBoolean(false)
 
     override fun start() {
+        print("Starting...")
         val NL = System.lineSeparator()
         val objectMapper = jacksonObjectMapper()
         var lastMessage: Message? = null
         val waitingForInput = AtomicBoolean(false)
         val client = VertxClient(vertx.eventBus(), System.getProperty("collokia.msg.category"),
                 onMessage = {
+                    val msg = "${NL}message > $NL${String(it.body, UTF_8)}$NL "
                     if (it.needsResponse) {
                         lastMessage = it
-                        print("$NL  message > ${String(it.body, UTF_8)}$NL  wants response$NL$ ")
+                        print("$msg wants response$NL?$ ")
                     } else {
-                        print("$NL  message > ${String(it.body, UTF_8)}$NL$ ")
+                        print("$msg $NL$ ")
                     }
                 },
                 onError = {
