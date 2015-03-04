@@ -4,10 +4,12 @@ import com.collokia.wire.protocol.MessageAction
 import java.util.UUID
 import com.collokia.wire.protocol.UUID_ZERO
 import com.collokia.wire.protocol.ConnectionMetadata
+import com.collokia.wire.protocol.MessageEnvelope
 
 public class Message(private val metadata: () -> ConnectionMetadata,
                      private val doSend: (Message) -> Unit,
-                     val envelope: com.collokia.wire.protocol.MessageEnvelope,
+                     val envelope: MessageEnvelope,
+                     val userKey: String? = null,
                      val respondTimeout: Long = VertxClient.DEFAULT_RESPOND_TIMEOUT,
                      val onResponse: ((Message) -> Unit) = VertxClient.NO_HANDLER,
                      val onRespondFail: ((Message) -> Unit) = VertxClient.NO_HANDLER) {
@@ -24,13 +26,13 @@ public class Message(private val metadata: () -> ConnectionMetadata,
         val isManualAddress = address.isNotEmpty()
         val needsResponse = !onResponse.identityEquals(VertxClient.NO_HANDLER)
         return Message(metadata, doSend,
-                com.collokia.wire.protocol.MessageEnvelope(UUID.randomUUID(), MessageAction.SEND,
+                MessageEnvelope(UUID.randomUUID(), MessageAction.SEND,
                         isManualAddress = isManualAddress,
                         needsResponse = needsResponse,
                         manualAddress = address,
                         returnAddress = if (needsResponse) metadata().replyAddress else UUID_ZERO,
                         body = body),
-                respondTimeout, onResponse, onRespondFail)
+                null, respondTimeout, onResponse, onRespondFail)
     }
 
     fun createResponse(body: ByteArray,
@@ -39,14 +41,14 @@ public class Message(private val metadata: () -> ConnectionMetadata,
                        onRespondFail: ((Message) -> Unit) = VertxClient.NO_HANDLER): Message {
         val needsResponse = !onResponse.identityEquals(VertxClient.NO_HANDLER)
         return Message(metadata, doSend,
-                com.collokia.wire.protocol.MessageEnvelope(UUID.randomUUID(), MessageAction.SEND,
+                MessageEnvelope(UUID.randomUUID(), MessageAction.SEND,
                         isResponse = true,
                         needsResponse = needsResponse,
                         address = envelope.returnAddress,
                         respondId = envelope.id,
                         returnAddress = if (needsResponse) metadata().replyAddress else UUID_ZERO,
                         body = body),
-                respondTimeout, onResponse, onRespondFail)
+                null, respondTimeout, onResponse, onRespondFail)
     }
 
     fun send() {

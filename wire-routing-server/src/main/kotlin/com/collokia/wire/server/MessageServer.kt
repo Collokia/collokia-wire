@@ -90,7 +90,10 @@ class MessageServer() : Verticle() {
                                                 } else if (envelope.isManualAddress) {
                                                     vertx.eventBus().publish("${prefix}${envelope.manualAddress}", bytes)
                                                 } else {
-                                                    vertx.eventBus().send(category, bytes)
+                                                    val baos = ByteArrayOutputStream()
+                                                    baos.write(envelope.toBytes())
+                                                    writeUtf8(key, baos)
+                                                    vertx.eventBus().send(category, baos.toByteArray())
                                                 }
                                             }
                                         }

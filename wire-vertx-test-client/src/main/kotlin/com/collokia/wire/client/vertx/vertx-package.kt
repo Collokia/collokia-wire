@@ -22,7 +22,7 @@ class TestServer() : Verticle() {
         val waitingForInput = AtomicBoolean(false)
         val client = VertxClient(vertx.eventBus(), System.getProperty("collokia.msg.category"),
                 onMessage = {
-                    val msg = "${NL}message > $NL${String(it.body, UTF_8)}$NL "
+                    val msg = "${NL}received message from: ${it.userKey}${NL}message > $NL${String(it.body, UTF_8)}$NL "
                     if (it.needsResponse) {
                         lastMessage = it
                         print("$msg wants response$NL?$ ")

@@ -12,6 +12,7 @@ import java.util.UUID
 import java.io.Closeable
 import org.vertx.java.core.Handler
 import java.util.concurrent.atomic.AtomicInteger
+import com.collokia.util.serialization.readUtf8
 
 public class VertxClient(val eventBus: EventBus,
                          val category: String,
@@ -24,8 +25,8 @@ public class VertxClient(val eventBus: EventBus,
     private val responseTail = buildResponseTail("", category)
     private val defaultMessage = Message({ metadata }, { sendMessage(it) }, MessageEnvelope(com.collokia.wire.protocol.UUID_ZERO, MessageAction.SEND))
     private val handlingService = ResponseHandlingService(messageThreads)
-    private val busHandler = MessageHandler({(envelope: MessageEnvelope) ->
-        val message = Message({ metadata }, { sendMessage(it) }, envelope)
+    private val busHandler = MessageHandler({(envelope: MessageEnvelope, userKey: String) ->
+        val message = Message({ metadata }, { sendMessage(it) }, envelope, userKey = userKey)
         if (!message.envelope.isResponse || !handlingService.handleResponse(message)) {
             onMessageCallable(message)
         }
@@ -35,14 +36,15 @@ public class VertxClient(val eventBus: EventBus,
         val DEFAULT_RESPOND_TIMEOUT: Long = 10000
         val NO_HANDLER = {(message: Message) -> }
 
-        private class MessageHandler(val handle: (MessageEnvelope) -> Unit) : Handler<org.vertx.java.core.eventbus.Message<ByteArray>> {
+        private class MessageHandler(val handle: (MessageEnvelope, String) -> Unit) : Handler<org.vertx.java.core.eventbus.Message<ByteArray>> {
 
             override fun handle(message: org.vertx.java.core.eventbus.Message<ByteArray>?) {
                 val bytes = message?.body()
                 if (bytes != null) {
                     val cursor = AtomicInteger(0)
                     val envelope = MessageEnvelope.fromBytes(bytes, cursor)
-                    handle(envelope)
+                    val userKey = readUtf8(bytes, cursor)
+                    handle(envelope, userKey)
                 }
             }
         }
