@@ -5,5 +5,11 @@ dependencies {
     compile "io.vertx:vertx-core:${vertxVersion}"
     compile "io.vertx:vertx-platform:${vertxVersion}"
     compile "io.vertx:vertx-hazelcast:${vertxVersion}"
-}
 
+    compile "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
+    compile "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+    compile "com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonVersion}"
+
+    compile "org.apache.lucene:lucene-queryparser:${luceneVersion}"
+    compile "org.apache.lucene:lucene-analyzers-common:${luceneVersion}"
+}
