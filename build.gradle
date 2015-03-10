@@ -20,7 +20,7 @@ buildscript {
         maven {
             url 'https://collokia.artifactoryonline.com/collokia/collokia-oss'
         }
-        jcenter()
+        mavenCentral()
         maven {
             url 'http://oss.sonatype.org/content/repositories/snapshots'
         }
@@ -85,7 +85,7 @@ subprojects {
         maven {
             url 'https://collokia.artifactoryonline.com/collokia/collokia-oss'
         }
-        jcenter()
+        mavenCentral()
         maven {
             url 'http://oss.sonatype.org/content/repositories/snapshots'
         }
