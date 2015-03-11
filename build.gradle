@@ -47,7 +47,7 @@ subprojects {
     apply plugin: 'pride'
 
     sourceCompatibility = JavaVersion.VERSION_1_7
-    targetCompatibility = JavaVersion.VERSION_1_7
+    targetCompatibility = JavaVersion.VERSION_1_6
 
     task sourceJar(type: Jar) {
         classifier = 'sources'

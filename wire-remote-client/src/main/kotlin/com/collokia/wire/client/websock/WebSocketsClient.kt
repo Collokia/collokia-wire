@@ -1,12 +1,12 @@
 package com.collokia.wire.client.websock
 
 import com.ning.http.client.AsyncHttpClient
-import com.ning.http.client.ws.WebSocketUpgradeHandler
-import com.ning.http.client.ws.WebSocket
+import com.ning.http.client.websocket.WebSocketUpgradeHandler
+import com.ning.http.client.websocket.WebSocket
 import java.util.Timer
 import java.util.TimerTask
 import java.util.concurrent.atomic.AtomicLong
-import com.ning.http.client.ws.WebSocketByteListener
+import com.ning.http.client.websocket.WebSocketByteListener
 import com.collokia.wire.protocol.MessageEnvelope
 import java.util.UUID
 import org.apache.commons.io.IOUtils
@@ -121,6 +121,9 @@ public class WebSocketsClient(val endpoint: String,
 
     private fun start() {
         webSocket = httpClient.prepareGet(endpoint).execute(WebSocketUpgradeHandler.Builder().addWebSocketListener(object : WebSocketByteListener {
+            override fun onFragment(fragment: ByteArray?, last: Boolean) {
+                // nop?
+            }
 
             override fun onMessage(messageBytes: ByteArray?) {
                 lastMessageTime.set(System.currentTimeMillis())
