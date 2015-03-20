@@ -5,5 +5,5 @@ dependencies {
 
     testCompile "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
     testCompile "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
-    testCompile "com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonVersion}"
+    testCompile "com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonKotlinVersion}"
 }
