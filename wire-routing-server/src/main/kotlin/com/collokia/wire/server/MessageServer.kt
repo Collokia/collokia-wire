@@ -24,7 +24,7 @@ import com.collokia.config.AppConfig
 
 class MessageServer() : Verticle() {
 
-    class object {
+    companion object {
 
         val LOG = LoggerFactory.getLogger(javaClass<MessageServer>())
 

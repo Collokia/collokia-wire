@@ -43,14 +43,14 @@ class TestServer() : Verticle() {
                 line = console.readLine()
                 waitingForInput.set(false)
                 if (line != null && line.isNotEmpty()) {
-                    val lineParts = line!!.split("\\s+", 2)
+                    val lineParts = line.split("\\s+".toRegex(), 2)
                     val cmd = lineParts[0]
-                    val params = if (lineParts.size > 1) lineParts[1].trim() else "{}"
+                    val params = if (lineParts.size() > 1) lineParts[1].trim() else "{}"
                     val map = objectMapper.readValue(params, javaClass<Map<String, Any>>())
                     val address = map.getOrElse("address", { "" }) as String
                     val needsResponse = map.getOrElse("needsResponse", { false }) as Boolean
                     val respondTimeout = (map.getOrElse("timeout", { VertxClient.DEFAULT_RESPOND_TIMEOUT }) as Number).toLong()
-                    val body: ByteArray = (map.getOrElse("body", { "" }) as String).getBytes(UTF_8)
+                    val body: ByteArray = (map.getOrElse("body", { "" }) as String).toByteArray(UTF_8)
                     when (cmd) {
                         "send" -> {
                             if (needsResponse) {

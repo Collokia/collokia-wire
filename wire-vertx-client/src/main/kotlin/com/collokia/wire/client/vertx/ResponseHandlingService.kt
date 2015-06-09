@@ -12,11 +12,11 @@ public class ResponseHandlingService(private val threadCount: Int = 2, private v
 
     private val responseMap = ConcurrentHashMap<UUID, ResponseHandler>()
 
-    class object {
+    companion object {
         private data class ResponseHandler(val respondTimeoutFuture: ScheduledFuture<*>, val handle: ((Message) -> Unit))
     }
 
-    {
+    init {
         executor.scheduleAtFixedRate({
             var keys: Set<UUID> = HashSet()
             synchronized(responseMap) {
@@ -45,7 +45,7 @@ public class ResponseHandlingService(private val threadCount: Int = 2, private v
             responseMap.remove(message.id)
             message.onRespondFail(message)
         }, message.respondTimeout, TimeUnit.MILLISECONDS)
-        responseMap.put(message.id, ResponseHandler(respondTimeoutFuture, { (response: Message) ->
+        responseMap.put(message.id, ResponseHandler(respondTimeoutFuture, { response: Message ->
             executor.submit {
                 message.onResponse(response)
             }

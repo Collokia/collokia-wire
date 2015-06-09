@@ -20,7 +20,7 @@ val BYTES_ZERO = ByteArray(0)
 
 public class MessageAction() {
 
-    class object {
+    companion object {
         val INIT = 0
         val META = 1
         val PING = 2
@@ -41,7 +41,7 @@ public class MessageEnvelope(val id: UUID,
                              val returnAddress: UUID = UUID_ZERO,
                              val body: ByteArray = BYTES_ZERO) {
 
-    class object {
+    companion object {
 
         fun fromBytes(bytes: ByteArray, cursor: AtomicInteger): MessageEnvelope {
             val id = readUuid(bytes, cursor)
@@ -120,7 +120,7 @@ public class MessageEnvelope(val id: UUID,
 
 public class ConnectionMetadata(val directAddress: String = "", val replyAddress: UUID = UUID_ZERO, val isTrusted: Boolean = false) {
 
-    class object {
+    companion object {
 
         fun fromBytes(bytes: ByteArray, cursor: AtomicInteger): ConnectionMetadata {
             val directAddress = readUtf8(bytes, cursor)

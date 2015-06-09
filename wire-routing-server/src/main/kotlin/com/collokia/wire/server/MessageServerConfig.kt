@@ -10,7 +10,7 @@ class MessageServerConfig(
         val pingInterval: Long,
         val timeout: Long
 ) {
-    class object {
+    companion object {
         fun fromConfig(rootConfig: Config): MessageServerConfig {
             val config = rootConfig.getConfig("msg.server")!!
             return MessageServerConfig(

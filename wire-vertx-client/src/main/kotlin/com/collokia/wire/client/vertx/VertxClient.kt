@@ -25,16 +25,16 @@ public class VertxClient(val eventBus: EventBus,
     private val responseTail = buildResponseTail("", category)
     private val defaultMessage = Message({ metadata }, { sendMessage(it) }, MessageEnvelope(com.collokia.wire.protocol.UUID_ZERO, MessageAction.SEND))
     private val handlingService = ResponseHandlingService(messageThreads)
-    private val busHandler = MessageHandler({(envelope: MessageEnvelope, userKey: String) ->
+    private val busHandler = MessageHandler({ envelope: MessageEnvelope, userKey: String ->
         val message = Message({ metadata }, { sendMessage(it) }, envelope, userKey = userKey)
         if (!message.envelope.isResponse || !handlingService.handleResponse(message)) {
             onMessageCallable(message)
         }
     })
 
-    class object {
+    companion object {
         val DEFAULT_RESPOND_TIMEOUT: Long = 10000
-        val NO_HANDLER = {(message: Message) -> }
+        val NO_HANDLER = { message: Message -> }
 
         private class MessageHandler(val handle: (MessageEnvelope, String) -> Unit) : Handler<org.vertx.java.core.eventbus.Message<ByteArray>> {
 
@@ -50,7 +50,7 @@ public class VertxClient(val eventBus: EventBus,
         }
     }
 
-    {
+    init {
         eventBus.registerHandler(category, busHandler)
         eventBus.registerHandler(metadata.replyAddress.toString(), busHandler)
     }

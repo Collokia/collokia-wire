@@ -41,10 +41,10 @@ public class WebSocketsClient(val endpoint: String,
     private val defaultMessage = Message({ metadata }, { sendMessage(it) }, MessageEnvelope(UUID_ZERO, MessageAction.SEND))
     private val handlingService = MessageHandlingService(messageThreads)
 
-    class object {
+    companion object {
         val DEFAULT_SEND_TIMEOUT: Long = 5000
         val DEFAULT_RESPOND_TIMEOUT: Long = 10000
-        val NO_HANDLER = {(message: Message) -> }
+        val NO_HANDLER = { message: Message -> }
     }
 
     fun createMessage(body: ByteArray,
