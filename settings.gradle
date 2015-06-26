@@ -1,7 +1,1 @@
-include 'wire-protocol',
-        'wire-routing-server',
-        'wire-remote-client',
-        'wire-vertx-test-client',
-        'wire-vertx-client'
-
-        
+include 'wire-routing-server'

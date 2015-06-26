@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title>Message Test</title>
+  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row top-margin-2em">
+      <div class="col-md-12">
+        <form>
+          <div class="form-group">
+            <label for="endpoint">Endpoint</label>
+            <input type="text" class="form-control" id="endpoint" placeholder="endpoint url" value="ws://localhost:8080"/>
+          </div>
+          <label for="connect"></label>
+          <button type="submit" class="btn btn-success" id="connect">Connect</button>
+          <label for="disconnect"></label>
+          <button type="submit" class="btn btn-danger hidden" id="disconnect">Disconnect</button>
+        </form>
+      </div>
+    </div>
+    <div class="row top-margin-2em">
+      <div class="col-md-12">
+        <form>
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea class="form-control" rows="4" id="message" placeholder="message to send"></textarea>
+          </div>
+          <label for="send"></label>
+          <button type="submit" class="btn btn-primary" id="send">Send</button>
+        </form>
+      </div>
+    </div>
+    <div class="row top-margin-2em">
+      <div class="col-md-12">
+        <form>
+          <div class="form-group">
+            <label for="log">Received</label>
+            <textarea class="form-control" rows="12" id="log"></textarea>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+  <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/json2/20150503/json2.js"></script>
+  <script src="websockhop.js"></script>
+  <script src="index.js"></script>
+</body>
+</html>

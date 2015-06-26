@@ -1,7 +1,0 @@
-dependencies {
-    compile relativeProject(":wire-protocol")
-
-    compile "io.vertx:vertx-core:${vertxVersion}"
-}
-
-
